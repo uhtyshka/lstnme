@@ -9,18 +9,95 @@ function createImage(imageObj) {
         context.drawImage(imageObj, imageX, imageY);
 	      console.log(imageObj.width);
 
-        var matrix = [];
+        var columns = [];
         var acontext = new window.webkitAudioContext();
         for (var idx = 0, line = imageWidth; idx < line; idx += 1) {
           var pixelData = context.getImageData(idx, 0, 1, imageHeight);
-          matrix.push(pixelData)
+          columns.push(pixelData)
         };
-        
-        console.log(':::::::::::::::::::::::::::');
-        console.log(matrix);
-        console.log(':::::::::::::::::::::::::::');
-        console.log('Poehali!');
+        console.log('::::::::::::::::::::::::::::::::::::::::::::::::::::::::');
+        console.log('::::::::::::::::::::::::::::::::::::::::::::::::::::::::');
+        console.log(columns);
+        console.log('::: C O L U M N S   P A R S E D ::::::::::::::::::::::::');
+        console.log('::::::::::::::::::::::::::::::::::::::::::::::::::::::::');
+               
+        var matrix = [], iterationIndex = 0;
 
+        function playSound () {
+          this.osc.frequency.value = this.blue;
+          this.osc.play();
+        }
+
+        function Sound(opt) {
+          var osc = acontext.createOscillator();
+          osc.connect(acontext.destination);
+          osc.frequency.value = opt.blue;
+          this.o    = osc       ;
+          this.i    = opt.index ;
+          this.w    = opt.width ;
+          this.h    = opt.height;
+          this.r    = opt.red   ;
+          this.g    = opt.green ;
+          this.b    = opt.blue  ;
+          this.cb   = opt.next  ;
+          this.play = playSound ;
+        };
+        for(var widthIndex = 0, m = columns.length/2 ; widthIndex < m; widthIndex++ ) {
+          var allPixels   = columns[widthIndex].data.length/2,
+              heightIndex = 0;
+          iterationIndex = iterationIndex + 1;
+          for(var pixelIndex = 0; pixelIndex < allPixels; pixelIndex += 4) {
+            var data    = columns[widthIndex].data,
+                options = {
+                  index : iterationIndex      ,
+                  width : widthIndex          ,
+                  height: heightIndex         ,
+                  red   : data[pixelIndex]    ,
+                  green : data[pixelIndex + 1],
+                  blue  : data[pixelIndex + 2]
+                },
+                sound = new Sound(options);
+            matrix.push(sound);
+            iterationIndex = iterationIndex + 1 ;
+            heightIndex    = heightIndex    + 1 ;
+          }
+        }          
+        window.quene = 0;
+
+        setTimeout(function () {
+          playMatrix();
+        }, 50);
+
+        function runTime (argument) {
+          setTimeout(function () {
+            playMatrix();
+          }, 50);
+        }
+
+        function playMatrix (mtx) {
+            if(quene < matrix.length){
+              if(quene) {
+                matrix[quene].o.stop(matrix[quene].r/10);
+              }
+              window.quene = quene +1;
+              matrix[quene].o.start();
+              runTime();
+            } else {
+              alert('over');
+            }
+        }
+
+
+// @TODO TRY TO RUN ONE OSC BUT CHANGE THE FREQ DINAMICLY. IF IT WILL WORK, THAT TRY TO RUN FEW OSC WHICH BINDED TO RED GREEN AND BLUE
+
+
+        console.log('::::::::::::::::::::::::::::::::::::::::::::::::::::::::');
+        console.log(matrix);
+        console.log('::: M A T R I X   C R E A T E D ::::::::::::::::::::::::');
+        console.log('::::::::::::::::::::::::::::::::::::::::::::::::::::::::');
+        console.log('::::::::::::::::::::::::::::::::::::::::::::::::::::::::');
+
+/*
         var time = 1000;
         var index;
         for(var wi = 0, m = matrix.length; wi < m; wi++ ) {
@@ -41,13 +118,13 @@ function createImage(imageObj) {
             }, time);
             time += 1000;
           }
-        }
+        } */
       }
       var imageObj = new Image();
       imageObj.onload = function() {       
          createImage(this);
       };
-      imageObj.src = 'http://localhost:3000/colors.png';
+      imageObj.src = 'http://localhost:3000/circle.gif';
 
 
 
