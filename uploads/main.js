@@ -42,8 +42,8 @@ function createImage(imageObj) {
           this.cb   = opt.next  ;
           this.play = playSound ;
         };
-        for(var widthIndex = 0, m = columns.length/2 ; widthIndex < m; widthIndex++ ) {
-          var allPixels   = columns[widthIndex].data.length/2,
+        for(var widthIndex = 0, m = columns.length/10 ; widthIndex < m; widthIndex++ ) {
+          var allPixels   = columns[widthIndex].data.length/10,
               heightIndex = 0;
           iterationIndex = iterationIndex + 1;
           for(var pixelIndex = 0; pixelIndex < allPixels; pixelIndex += 4) {
@@ -64,9 +64,22 @@ function createImage(imageObj) {
         }          
         window.quene = 0;
 
+        window.rOsc = acontext.createOscillator();
+        rOsc.connect(acontext.destination);
+
+        window.bOsc = acontext.createOscillator();
+        bOsc.connect(acontext.destination);
+
+        window.gOsc = acontext.createOscillator();
+        gOsc.connect(acontext.destination);
+
+        rOsc.start();
+        bOsc.start();
+        gOsc.start();
+
         setTimeout(function () {
           playMatrix();
-        }, 50);
+        }, 2000);
 
         function runTime (argument) {
           setTimeout(function () {
@@ -76,11 +89,10 @@ function createImage(imageObj) {
 
         function playMatrix (mtx) {
             if(quene < matrix.length){
-              if(quene) {
-                matrix[quene].o.stop(matrix[quene].r/10);
-              }
               window.quene = quene +1;
-              matrix[quene].o.start();
+              rOsc.frequency.value = matrix[quene].r + 200;
+              bOsc.frequency.value = matrix[quene].b + 200;
+              gOsc.frequency.value = matrix[quene].g + 200;
               runTime();
             } else {
               alert('over');
@@ -90,7 +102,7 @@ function createImage(imageObj) {
 
 // @TODO TRY TO RUN ONE OSC BUT CHANGE THE FREQ DINAMICLY. IF IT WILL WORK, THAT TRY TO RUN FEW OSC WHICH BINDED TO RED GREEN AND BLUE
 
-
+        window.matrix = matrix;
         console.log('::::::::::::::::::::::::::::::::::::::::::::::::::::::::');
         console.log(matrix);
         console.log('::: M A T R I X   C R E A T E D ::::::::::::::::::::::::');
@@ -124,7 +136,7 @@ function createImage(imageObj) {
       imageObj.onload = function() {       
          createImage(this);
       };
-      imageObj.src = 'http://localhost:3000/circle.gif';
+      imageObj.src = 'http://localhost:3000/jss.png';
 
 
 
