@@ -37,7 +37,7 @@ function createImage(imageObj) {
           this.b    = opt.blue  ;
         };
 
-        for(var widthIndex = 0, m = columns.length ; widthIndex < m; widthIndex++ ) {
+        for(var widthIndex = 0, m = columns.length ; widthIndex < m; widthIndex = widthIndex + 3 ) {
           var allPixels   = columns[widthIndex].data.length,
               heightIndex = 0;
           iterationIndex = iterationIndex + 1;
@@ -77,17 +77,44 @@ function createImage(imageObj) {
         gOsc.start(); 
 
         setTimeout(function () {
+          timeLog('Start :');
           playMatrix();
         }, 2000);
+
+        function timeLog (msg) {
+          console.log('::::::::::::::::::::::::::::::::::::::::::::::::');
+          console.log('::::: ' + msg)
+          console.log('::::: ' )
+          console.log('::::: ' + new Date());
+          console.log('::::: ')
+          console.log('::::: Matrix length: ')
+          console.log('::::: ')
+          console.log('::::: ' + matrix.length)
+          console.log('::::::::::::::::::::::::::::::::::::::::::::::::');
+        }
 
         function runTime (argument) {
           setTimeout(function () {
             playMatrix();
-          }, 10);
+          }, 5); 
         }
 
         function playMatrix (mtx) {
-            window.quene = quene +1;
+            window.quene = window.quene + 1;
+            if (window.quene === 1000) {
+              timeLog(' Quene: 1000 ')
+            } else if( window.quene === 10000){
+              timeLog(' Quene: 10 000')
+            } else if( window.quene === 20000 ){
+              timeLog(' Quene: 20 000')
+            } else if(window.quene === 50000){
+              timeLog(' Quene: 50 000')
+            } else if( window.quene === 100000){
+              timeLog(' Quene: 100 000')
+            } else if( window.quene === 200000){
+              timeLog(' Quene: 200 000')
+            }
+
             if(quene < matrix.length){
               rOsc.frequency.value = matrix[quene].r + 200;
               bOsc.frequency.value = matrix[quene].b + 200;
